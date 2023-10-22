@@ -1,4 +1,4 @@
-package com.udacity.jdnd.course3.critter.CritterChronologer;
+package com.udacity.jdnd.course3.critter.CritterChronologer.restcontroller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
