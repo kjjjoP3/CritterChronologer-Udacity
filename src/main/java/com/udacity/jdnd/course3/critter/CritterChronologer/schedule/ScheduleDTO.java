@@ -3,6 +3,7 @@ package com.udacity.jdnd.course3.critter.CritterChronologer.schedule;
 import com.udacity.jdnd.course3.critter.CritterChronologer.user.EmployeeSkill;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +17,11 @@ public class ScheduleDTO {
     private List<Long> petIds;
     private LocalDate date;
     private Set<EmployeeSkill> activities;
+
+    public ScheduleDTO() {
+        employeeIds = new ArrayList<>();
+        petIds = new ArrayList<>();
+    }
 
     public long getId(){
         return id;
