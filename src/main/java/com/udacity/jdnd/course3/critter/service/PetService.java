@@ -20,4 +20,6 @@ public interface PetService {
     List<Pet> getPetsByOwner(Long ownerId);
 
     List<Pet> findAllById(List<Long> ids);
+
+    List<Pet> getAllPets();
 }

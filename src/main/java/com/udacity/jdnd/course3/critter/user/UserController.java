@@ -73,8 +73,13 @@ public class UserController {
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        return employeeService.findEmployeesForService(employeeDTO.getDate(), employeeDTO.getSkills())
-                .stream().map(this::toEmployeeDTO).collect(Collectors.toList());
+        List<Employee> availableEmployees = employeeService.findEmployeesForService(employeeDTO.getDate(), employeeDTO.getSkills());
+
+        List<EmployeeDTO> employeeDTOs = availableEmployees.stream()
+                .map(this::toEmployeeDTO)
+                .collect(Collectors.toList());
+
+        return employeeDTOs;
     }
 
     private CustomerDTO toCustomerDTO(Customer customer){

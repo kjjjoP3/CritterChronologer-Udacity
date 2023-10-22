@@ -32,10 +32,17 @@ public class PetController {
         return toPetDTO(pet);
     }
 
-    @GetMapping
-    public List<PetDTO> getPets(){
-        throw new UnsupportedOperationException();
+    @GetMapping()
+    public List<PetDTO> getPets() {
+        List<Pet> pets = petService.getAllPets();
+
+        List<PetDTO> petDTOs = pets.stream()
+                .map(this::toPetDTO)
+                .collect(Collectors.toList());
+
+        return petDTOs;
     }
+
 
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {

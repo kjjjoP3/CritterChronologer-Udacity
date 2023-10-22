@@ -1,5 +1,7 @@
 package com.udacity.jdnd.course3.critter.schedule;
 
+import com.udacity.jdnd.course3.critter.entities.Employee;
+import com.udacity.jdnd.course3.critter.entities.Pet;
 import com.udacity.jdnd.course3.critter.entities.Schedule;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import com.udacity.jdnd.course3.critter.service.PetService;
@@ -8,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +33,24 @@ public class ScheduleController {
     @PostMapping
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = new Schedule();
-        BeanUtils.copyProperties(scheduleDTO, schedule);
-        if(scheduleDTO != null) {
-            schedule.setPets(petService.findAllById(scheduleDTO.getPetIds()));
-            schedule.setEmployees(employeeService.findAllById(scheduleDTO.getEmployeeIds()));
+        schedule.setDate(scheduleDTO.getDate());
+        schedule.setActivities(scheduleDTO.getActivities());
+
+        if (scheduleDTO.getEmployeeIds() != null && !scheduleDTO.getEmployeeIds().isEmpty()) {
+            List<Employee> employees = employeeService.findAllById(scheduleDTO.getEmployeeIds());
+            schedule.setEmployees(employees);
         }
-        return toScheduleDTO(scheduleService.createSchedule(schedule));
+
+        if (scheduleDTO.getPetIds() != null && !scheduleDTO.getPetIds().isEmpty()) {
+            List<Pet> pets = petService.findAllById(scheduleDTO.getPetIds());
+            schedule.setPets(pets);
+        }
+
+        Schedule createdSchedule = scheduleService.createSchedule(schedule);
+        scheduleDTO.setId(createdSchedule.getId());
+        return scheduleDTO;
     }
+
 
     @GetMapping
     public List<ScheduleDTO> getAllSchedules() {
@@ -53,12 +67,18 @@ public class ScheduleController {
 
     @GetMapping("/employee/{employeeId}")
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
-        if(employeeId == 0L) {
-            return null;
+        if (employeeId <= 0L) {
+            return Collections.emptyList();
         }
-        return scheduleService.getAllSchedulesForEmployee(employeeId)
-                .stream().map(this::toScheduleDTO).collect(Collectors.toList());
+
+        List<Schedule> schedules = scheduleService.getAllSchedulesForEmployee(employeeId);
+
+        return schedules.stream()
+                .map(this::toScheduleDTO)
+                .collect(Collectors.toList());
     }
+
+
 
     @GetMapping("/customer/{customerId}")
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable long customerId) {
