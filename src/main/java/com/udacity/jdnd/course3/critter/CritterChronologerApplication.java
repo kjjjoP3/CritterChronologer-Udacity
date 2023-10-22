@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Launches the Spring application. Unmodified from starter code.
  */
 @SpringBootApplication
-public class CritterApplication {
+public class CritterChronologerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CritterApplication.class, args);
+		SpringApplication.run(CritterChronologerApplication.class, args);
 	}
 
 }
