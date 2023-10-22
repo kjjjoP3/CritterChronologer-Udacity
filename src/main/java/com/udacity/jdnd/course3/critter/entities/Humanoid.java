@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Humanoid {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "humanoid_seq")
-    @SequenceGenerator(name = "humanoid_seq", sequenceName = "humanoid_seq", allocationSize = 1)
+    @SequenceGenerator(name = "humanoid_seq", sequenceName = "humanoid_seq", allocationSize = 1, initialValue = 1)
     private Long id;
 
     String name;
