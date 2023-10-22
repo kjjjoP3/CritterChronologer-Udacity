@@ -24,8 +24,8 @@ public class PetController {
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
         Pet pet = new Pet();
         BeanUtils.copyProperties(petDTO, pet);
-        long idPet = petDTO.getOwnerId();
-        return toPetDTO(petService.createPet(pet, idPet));
+        long ownerId = petDTO.getOwnerId();
+        return toPetDTO(petService.createPet(pet, ownerId));
     }
 
     @GetMapping("/{petId}")
@@ -35,24 +35,28 @@ public class PetController {
     }
 
     @GetMapping
-    public List<PetDTO> getPets(){
+    public List<PetDTO> getPets() {
         throw new UnsupportedOperationException();
     }
 
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
         List<Pet> pets = petService.getPetsByOwner(ownerId);
-        return pets.stream().map(this::toPetDTO).collect(Collectors.toList());
+        List<PetDTO> petDTOs = new ArrayList<>();
+        for (Pet pet : pets) {
+            PetDTO petDTO = new PetDTO();
+            BeanUtils.copyProperties(pet, petDTO);
+            petDTOs.add(petDTO);
+        }
+        return petDTOs;
     }
+
 
     private PetDTO toPetDTO(Pet pet) {
         PetDTO petDTO = new PetDTO();
         BeanUtils.copyProperties(pet, petDTO);
-        if(pet != null) {
-            petDTO.setOwnerId(pet.getCustomer().getId());
-
-        }
         return petDTO;
     }
 }
+
 
