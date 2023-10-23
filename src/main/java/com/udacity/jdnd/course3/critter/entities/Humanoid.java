@@ -4,16 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Humanoid {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "humanoid_seq")
+    @SequenceGenerator(name = "humanoid_seq", sequenceName = "humanoid_seq", allocationSize = 1, initialValue = 1)
+    private Long id;
 
     String name;
 
