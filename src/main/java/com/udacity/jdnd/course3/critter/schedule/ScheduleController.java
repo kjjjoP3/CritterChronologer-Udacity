@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,15 +68,17 @@ public class ScheduleController {
 
     @GetMapping("/employee/{employeeId}")
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
-        if (employeeId <= 0L) {
-            return Collections.emptyList();
+        Employee employee = employeeService.findById(employeeId);
+        if (employee == null) {
+            return new ArrayList<>();
         }
-
         List<Schedule> schedules = scheduleService.getAllSchedulesForEmployee(employeeId);
 
-        return schedules.stream()
+        List<ScheduleDTO> scheduleDTOs = schedules.stream()
                 .map(this::toScheduleDTO)
                 .collect(Collectors.toList());
+
+        return scheduleDTOs;
     }
 
 
@@ -92,8 +95,17 @@ public class ScheduleController {
     private ScheduleDTO toScheduleDTO(Schedule schedule) {
         ScheduleDTO scheduleDTO = new ScheduleDTO();
         BeanUtils.copyProperties(schedule, scheduleDTO);
-        schedule.getEmployees().forEach(employee -> {scheduleDTO.getEmployeeIds().add(employee.getId());});
-        schedule.getPets().forEach(pet -> {scheduleDTO.getPetIds().add(pet.getId());});
+        List<Long> employeeIds = schedule.getEmployees().stream()
+                .map(Employee::getId)
+                .collect(Collectors.toList());
+
+        List<Long> petIds = schedule.getPets().stream()
+                .map(Pet::getId)
+                .collect(Collectors.toList());
+
+        scheduleDTO.setEmployeeIds(employeeIds);
+        scheduleDTO.setPetIds(petIds);
+
         return scheduleDTO;
     }
 }
